@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "829645055585",
+    "project_id": "fasum-app-fd47d",
+    "storage_bucket": "fasum-app-fd47d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829645055585:android:d136083c446139ed26ec20",
+        "android_client_info": {
+          "package_name": "com.example.fasum_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "829645055585-oekhrqinpk55je647kd0ogsvr042jd8f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm_7ScGoq4DBiP-J1IYeu0e1jZTcoFKK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "829645055585-oekhrqinpk55je647kd0ogsvr042jd8f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "829645055585-0i94j9vie4hsgei8osa1hks5h0cfdkr5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fisumApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829645055585:android:42de20ecee2afb0026ec20",
+        "android_client_info": {
+          "package_name": "com.example.fisum_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "829645055585-pnupfc4ej4qtn8pm33s37vu8491mafo7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fisum_app",
+            "certificate_hash": "4409b98387bb99111b2f82aadb8cbea68680d3b3"
+          }
+        },
+        {
+          "client_id": "829645055585-oekhrqinpk55je647kd0ogsvr042jd8f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm_7ScGoq4DBiP-J1IYeu0e1jZTcoFKK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "829645055585-oekhrqinpk55je647kd0ogsvr042jd8f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "829645055585-0i94j9vie4hsgei8osa1hks5h0cfdkr5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fisumApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
