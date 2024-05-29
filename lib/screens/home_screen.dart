@@ -3,7 +3,9 @@ import 'package:fasum_app/screens/add_post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fasum_app/screens/sign_in_screen.dart';
-import 'package:intl/intl.dart'; // Add this import statement
+import 'package:intl/intl.dart';
+
+import 'comment_screen.dart'; // Add this import statement
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,9 +28,26 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _onCommentPressed(BuildContext context, String postId) {
+    // Navigate to the comment page
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CommentPage(postId: postId),
+      ),
+    );
+  }
+
+  void _onLikePressed(BuildContext context, String postId) {
+    // Save the post to the favorite page
+    FirebaseFirestore.instance.collection('favorites').doc(postId).set({
+      'post_id': postId,
+      'timestamp': Timestamp.now(),
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -59,14 +78,48 @@ class _HomeScreenState extends State<HomeScreen> {
               DateTime dateTime = document['timestamp'].toDate();
               String formattedDateTime = DateFormat.yMMMd().add_Hms().format(dateTime);
               String userEmail = document["email"];
+              String imageUrl = document["image_url"];
+              String text = document["text"];
+              String postId = document.id;
 
               return Card(
-                child: ListTile(
-                  title: Text(userEmail!,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13)),
-                  subtitle:  Text(document['text'],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11)),
-                  leading: Container(width:50, height: 50,child: Center(child: Image.network(document['image_url'],fit: BoxFit.cover,))),
-                  trailing:  Text(formattedDateTime,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10)),
-
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      height: 200,
+                      child: Image.network(imageUrl, fit: BoxFit.cover,),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(userEmail, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(formattedDateTime, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10)),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.comment),
+                          onPressed: () {
+                            _onCommentPressed(context, postId);
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.favorite_border),
+                          onPressed: () {
+                            _onLikePressed(context, postId);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               );
             }).toList(),

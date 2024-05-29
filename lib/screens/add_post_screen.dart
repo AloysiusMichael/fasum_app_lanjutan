@@ -46,7 +46,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
             TextField(
               controller: _postTextController,
               decoration: InputDecoration(
-                hintText: 'Enter your post',
+                hintText: 'Masukkan deskripsi posting',
                 border: OutlineInputBorder(),
               ),
             ),
