@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Container(
                       height: 200,
-                      child: Image.network(imageUrl, fit: BoxFit.cover,),
+                      child: ClipRRect(borderRadius : BorderRadius.circular(8),child: Image.network(imageUrl, fit: BoxFit.cover,)),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),

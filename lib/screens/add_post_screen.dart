@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AddPostScreen extends StatefulWidget {
   @override
@@ -15,6 +17,23 @@ class _AddPostScreenState extends State<AddPostScreen> {
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  String _locationMessage = '';
+  void _getCurrentLocation() async {
+    final status = await Permission.location.status;
+    if (!status.isGranted) {
+      final result = await Permission.location.request();
+      if (result != PermissionStatus.granted) {
+        return;
+      }
+    }
+    final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _locationMessage =
+      'latitude: ${position.latitude}, longtitude: ${position.longitude}';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +98,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     'image_url': downloadUrl,
                     'email': userEmail,
                     'timestamp': Timestamp.now(),
+                    'location': _locationMessage,
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Image uploaded successfully')),
@@ -99,6 +119,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   }
 
   Future<void> _showImageSourceDialog() async {
+    await _getCurrentLocation;
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
