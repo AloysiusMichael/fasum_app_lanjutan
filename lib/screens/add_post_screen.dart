@@ -18,22 +18,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   XFile? _image;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  String _locationMessage = '';
-  void _getCurrentLocation() async {
-    final status = await Permission.location.status;
-    if (!status.isGranted) {
-      final result = await Permission.location.request();
-      if (result != PermissionStatus.granted) {
-        return;
-      }
-    }
-    final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      _locationMessage =
-      'latitude: ${position.latitude}, longtitude: ${position.longitude}';
-    });
-  }
+  LatLng? _location;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +41,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: _image != null
+                child: _image!= null
                     ? Image.file(File(_image!.path))
                     : Icon(Icons.camera_alt),
               ),
@@ -79,6 +64,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   );
                   return;
                 }
+                _location = await CurrentLocation.getCurrentLocation();
                 Reference referenceRoot = FirebaseStorage.instance.ref();
                 Reference referenceDirImages = referenceRoot.child("images");
                 Reference referenceImagesToUpload =
@@ -98,7 +84,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     'image_url': downloadUrl,
                     'email': userEmail,
                     'timestamp': Timestamp.now(),
-                    'location': _locationMessage,
+                    'location': GeoPoint(_location!.latitude, _location!.longitude),
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Image uploaded successfully')),
@@ -119,7 +105,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
   }
 
   Future<void> _showImageSourceDialog() async {
-    await _getCurrentLocation;
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -128,12 +113,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text('Take anew photo'),
+              title: Text('Take a new photo'),
               onTap: () async {
                 Navigator.of(context).pop();
                 final pickedFile =
                 await _picker.pickImage(source: ImageSource.camera);
-                if (pickedFile != null) {
+                if (pickedFile!= null) {
                   setState(() {
                     _image = pickedFile;
                   });
@@ -146,7 +131,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 Navigator.of(context).pop();
                 final pickedFile =
                 await _picker.pickImage(source: ImageSource.gallery);
-                if (pickedFile != null) {
+                if (pickedFile!= null) {
                   setState(() {
                     _image = pickedFile;
                   });
@@ -163,5 +148,31 @@ class _AddPostScreenState extends State<AddPostScreen> {
   void dispose() {
     _postTextController.dispose();
     super.dispose();
+  }
+}
+
+class LatLng {
+  final double latitude;
+  final double longitude;
+
+  LatLng({required this.latitude, required this.longitude});
+}
+
+class CurrentLocation {
+  static Future<LatLng> getCurrentLocation() async {
+    final status = await Permission.location.status;
+    if (!status.isGranted) {
+      final result = await Permission.location.request();
+      if (result!= PermissionStatus.granted) {
+        throw 'Location permission denied';
+      }
+    }
+
+    try {
+      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      return LatLng(latitude:position.latitude, longitude: position.longitude);
+    } catch (e){
+      throw 'Error getting current location: $e';
+    }
   }
 }

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fasum_app/screens/sign_in_screen.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'comment_screen.dart'; // Add this import statement
+import 'comment_screen.dart';
+import 'detail_location_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -81,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
               String imageUrl = document["image_url"];
               String text = document["text"];
               String postId = document.id;
+              GeoPoint location = document["location"];
 
               return Card(
                 child: Column(
@@ -88,7 +91,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Container(
                       height: 200,
-                      child: ClipRRect(borderRadius : BorderRadius.circular(8),child: Image.network(imageUrl, fit: BoxFit.cover,)),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(imageUrl, fit: BoxFit.cover),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -101,6 +107,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(formattedDateTime, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10)),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailLocationScreen(
+                              latitude: location.latitude,
+                              longitude: location.longitude,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Latitude: ${location.latitude}, Longitude: ${location.longitude}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.blue)),
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -115,6 +138,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           icon: const Icon(Icons.favorite_border),
                           onPressed: () {
                             _onLikePressed(context, postId);
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.location_on),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailLocationScreen(
+                                  latitude: location.latitude,
+                                  longitude: location.longitude,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ],
